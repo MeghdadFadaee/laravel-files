@@ -1,62 +1,61 @@
-## Kodel filepond?
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-Is pradziu tai buvo jokios priezastis. Tiesiog tu paminejai, filament naudoja tai ir vaziuojam.
+<p align="center">
+<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
 
-Dabar paziurejau kitas alternatyvas kelias, tai po kelis metus jokio aktyvumo. Filepond laiks nuo laiko patagina nauja versija.
+## About Laravel
 
-Plius prisiminiau sita posta rasyta: https://laraveldaily.com/post/laravel-filepond-guide
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
----
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-## Install Filepond
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-Kaip ji instaliuoti tai visiskai _personal preference_. Kas naudos CDN, kas npm install. As pasirinkau si karta npm varianta: https://github.com/krekas/laravel-chunk-uploads/commit/87171100ece95ede9e9d8153198db0b6b5e660de
+## Learning Laravel
 
-I `resources/js/app.js` importavau, ir padariau, kad butu jis globaliai.
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-`dashboard.blade.php` inicijuojamas filepond, esme yra config jog zinotu filepond, kad chunks naudojam. `chunkSize` kiekvienas pagal save pasizaisti gali. Toliau server url ir header is musu posto paimta.
+You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
-## Server Config
+If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-NIEKO NEREIKIA. Tam ir yra chunks, kad siuncia faila tokiu dydziu kokiu nustatai ir galima naudoti tiesiog default visus max upload size (google sako 2mb, netikrinau).
+## Laravel Sponsors
 
----
+We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
-## Variantas Be Package
+### Premium Partners
 
-Kodas is esmes su AI, bet su nemazai try and error. Visu pirma, ka daro filepond: pirma siuncia **post** request, o visi sekantys eina jau **patch**. Todel route ir yra du tipai:
-https://github.com/krekas/laravel-chunk-uploads/blob/no-package-chunk-upload/routes/web.php#L19
-```php
-Route::match(['post', 'patch'], 'upload', UploadController::class)->name('upload');
-```
+- **[Vehikl](https://vehikl.com)**
+- **[Tighten Co.](https://tighten.co)**
+- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+- **[64 Robots](https://64robots.com)**
+- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
+- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
+- **[Redberry](https://redberry.international/laravel-development)**
+- **[Active Logic](https://activelogic.com)**
 
-Tuomet filepond siuncia ir custom headerius: https://pqina.nl/filepond/docs/api/server/#process-chunks
+## Contributing
 
-Jeigu failas mazesnis negu chunk tai siuncia paprastai, todel ir yra du upload variantai. Tas regular file upload tai realiai dzin, nieko ten isskirtinio.
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-Ziurim tik chunk upload logika.
+## Code of Conduct
 
-https://github.com/krekas/laravel-chunk-uploads/blob/no-package-chunk-upload/app/Services/ChunkUploadService.php
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-Is headeriu turim info apie faila. Tada temp direktorija kur failo chunks keliami. Kai viskas sukelta, paskutinio chunk dydis bus mazesnis negu kitu, tuomet jau judama toliau.
+## Security Vulnerabilities
 
-Surenkam visus chunks i galutini faila, padedam i reikiama vieta, isvalom temp direktorija, sukuriam db irasa.
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
----
+## License
 
-## Variantas Su Package
-
-Cia tiesiog alternatyva, kad yra ir package.
-
-[Quickstart](https://github.com/rahulhaque/laravel-filepond?tab=readme-ov-file#quickstart) ta pati raso, filepond instalini, kaip nori. Esme tik nurodyti teisinga server URL.
-
-Package esme, kad, handlina visa upload. Paskui tik perkelti belieka is temp vietos i teisinga. Sito perkelimo nepadariau, quickstart yra pamineta kaip ta padaryti:
-```php
-// Set filename
-$avatarName = 'avatar-' . auth()->id();
-
-// Move the file to permanent storage
-// Automatic file extension set
-$fileInfo = Filepond::field($request->avatar)
-    ->moveTo('avatars/' . $avatarName);
-```
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
