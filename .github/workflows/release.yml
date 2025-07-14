@@ -1,0 +1,85 @@
+name: Generate Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  Release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          tools: composer:v2
+          coverage: xdebug
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Node Dependencies
+        run: npm i
+
+      - name: Install PHP Dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Build Assets
+        run: npm run build
+
+      - name: Get latest release version
+        id: get_version
+        run: |
+          git fetch --tags
+          last_tag=$(git tag --list "v2.3.*" | sed 's/v2.3.//' | sort -n | tail -n 1)
+
+          if [ -z "$last_tag" ]; then
+            next_tag="v2.3.1"
+          else
+            next_number=$((last_tag + 1))
+            next_tag="v2.3.$next_number"
+          fi
+
+          echo "next_version=$next_tag" >> "$GITHUB_OUTPUT"
+
+      - name: Create new release branch
+        run: |
+          git checkout -b release/${{ steps.get_version.outputs.next_version }} main
+
+      - name: Commit build output
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add -f .
+          git commit -m "Build output for ${{ steps.get_version.outputs.next_version }}"
+
+      - name: Push release branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
+          git push origin release/${{ steps.get_version.outputs.next_version }}
+
+          git tag ${{ steps.get_version.outputs.next_version }}
+          git push origin refs/tags/${{ steps.get_version.outputs.next_version }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.get_version.outputs.next_version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete release branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git push origin --delete release/${{ steps.get_version.outputs.next_version }}
