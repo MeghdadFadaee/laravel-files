@@ -39,13 +39,13 @@ jobs:
         id: get_version
         run: |
           git fetch --tags
-          last_tag=$(git tag --list "v2.3.*" | sed 's/v2.3.//' | sort -n | tail -n 1)
+          last_tag=$(git tag --list "v1.0.*" | sed 's/v1.0.//' | sort -n | tail -n 1)
 
           if [ -z "$last_tag" ]; then
-            next_tag="v2.3.1"
+            next_tag="v1.0.1"
           else
             next_number=$((last_tag + 1))
-            next_tag="v2.3.$next_number"
+            next_tag="v1.0.$next_number"
           fi
 
           echo "next_version=$next_tag" >> "$GITHUB_OUTPUT"
